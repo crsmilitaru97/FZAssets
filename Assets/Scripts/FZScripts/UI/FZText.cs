@@ -2,11 +2,29 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-//07.12.22
+//07.04.23
 
 public class FZText : Text
 {
     public float timeInterval = 0.025f;
+    public string[] translations;
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+
+        FZTranslations.AllTextsWithTranslations.Add(this);
+
+        ChangeTextLanguage();
+    }
+
+    public void ChangeTextLanguage()
+    {
+        if (translations.Length > 0 && translations.Length > FZTranslations.currentLanguageID)
+        {
+            text = translations[FZTranslations.currentLanguageID];
+        }
+    }
 
     public void SlowlyUpdateNumberText(int newValue)
     {
@@ -50,7 +68,7 @@ public class FZText : Text
     }
 
     int i = 0;
-    private IEnumerator WriteText(string text)
+    private IEnumerator WriteText(string text, bool withSound = false)
     {
         this.text = string.Empty;
         foreach (var item in text)
@@ -61,8 +79,10 @@ public class FZText : Text
 
             if (i % 2 == 0)
             {
-                if (FZAudio.Manager != null)
-                    FZAudio.Manager?.PlaySound(FZAudio.Manager.textSound);
+                if (FZAudio.Manager != null && withSound)
+                {
+                    FZAudio.Manager.PlaySound(FZAudio.Manager.textSound);
+                }
             }
         }
     }
