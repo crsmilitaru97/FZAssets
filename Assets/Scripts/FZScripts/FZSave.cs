@@ -29,6 +29,15 @@ public static class FZSave
         PlayerPrefs.DeleteKey(name);
     }
 
+    public static void DeleteList<T>(string title, List<T> list)
+    {
+        PlayerPrefs.GetInt(title + "Size", list.Count);
+        for (int i = 0; i < list.Count; i++)
+        {
+            PlayerPrefs.DeleteKey(title + i.ToString());
+        }
+        PlayerPrefs.DeleteKey(title + "Size");
+    }
 
     public class Bool
     {
@@ -52,6 +61,26 @@ public static class FZSave
                 PlayerPrefs.SetInt(title, 1);
             else
                 PlayerPrefs.SetInt(title, 0);
+        }
+
+        public static void SetList(string title, List<bool> list)
+        {
+            PlayerPrefs.SetInt(title + "Size", list.Count);
+            for (int i = 0; i < list.Count; i++)
+            {
+                FZSave.Bool.Set(title + i.ToString(), list[i]);
+            }
+        }
+
+        public static List<bool> GetList(string title)
+        {
+            var size = PlayerPrefs.GetInt(title + "Size", 0);
+            List<bool> save = new List<bool>();
+            for (int i = 0; i < size; i++)
+            {
+                save.Add(FZSave.Bool.Get(title + i.ToString(), false));
+            }
+            return save;
         }
     }
 
